@@ -7,41 +7,31 @@ namespace ООАиД_9
     {
         static void Main()
         {
-            Component fileSystem = new Directory("Файловая система");//
-            // определяем новый диск
+            Component fileSystem = new Directory("Файловая система");
             Component diskC = new Directory("Диск С");
-            // новые файлы
             Component pngFile = new File("12345.png", 100);
-            Component docxFile = new File("Document.docx", 200);
-            // добавляем файлы на диск С
-            diskC.AddFile(pngFile);
-            diskC.AddFile(docxFile);
-            // добавляем диск С в файловую систему
-            fileSystem.AddFolder(diskC);
-            // удаляем с диска С файл
-            //diskC.RemoveFile(pngFile);
-            // создаем новую папку
+            Component docxFile = new File("Document.docx", 200);          
+            fileSystem.Add(diskC);
             Component docsFolder = new Directory("Мои Документы");
+            diskC.Add(docsFolder);
+            diskC.Add(pngFile);
+            diskC.Add(docxFile);
             Component fold1 = new Directory("Program files");
             Component fold2 = new Directory("Program files (x86)");
             Component fold3 = new Directory("Users");
             Component fold4 = new Directory("Games");
-            Component fold5 = new Directory("Divers");
-            diskC.AddFolder(fold1);
-            diskC.AddFolder(fold2);
-            diskC.AddFolder(fold3);
-            diskC.AddFolder(fold4);
-            diskC.AddFolder(fold5);
-            //diskC.AddFolder(fold1);
-            // добавляем в нее файлы
+            Component fold5 = new Directory("Drivers");
+            diskC.Add(fold1);
+            diskC.Add(fold2);
+            diskC.Add(fold3);
+            diskC.Add(fold4);
+            diskC.Add(fold5);
             Component txtFile = new File("readme.txt", 300);
             Component csFile = new File("Program.cs", 400);
             Component file1 = new File("Engine.exe", 1500);
-            //docsFolder.AddFile(txtFile);
-            docsFolder.AddFile(csFile);
-            diskC.AddFile(txtFile);
-            diskC.AddFile(file1);
-            diskC.AddFolder(docsFolder);
+            docsFolder.Add(csFile);
+            diskC.Add(txtFile);
+            diskC.Add(file1);
             diskC.Print();
             Console.WriteLine(diskC.Size());
             Console.Read();
@@ -50,79 +40,50 @@ namespace ООАиД_9
     abstract class Component
     {
         protected internal string name;
-        public Component(string name) { this.name = name; }
-        public virtual void AddFolder(Component component) { }
-        public virtual void AddFile(Component component) { }
-        public virtual void RemoveFolder(Component component) { }
-        public virtual void RemoveFile(Component component) { }
+        public Component(string name) => this.name = name;
+        public virtual void Add(Component component) { }
+        public virtual void Remove(Component component) { }
         public virtual int Size() { return 0; }
         public virtual void Print() => Console.WriteLine(name + " ");
     }
     class Directory : Component
     {
-        private List<Component> folders = new List<Component>();
-        private List<Component> files = new List<Component>();
+        private List<Component> foldersAndFiles = new List<Component>();
         public Directory(string name) : base(name) { }
-        public override void AddFolder(Component component)
-        {
-            if (!folders.Contains(component)) folders.Add(component);
+        public override void Add(Component component) 
+        { 
+            if (!foldersAndFiles.Contains(component)) foldersAndFiles.Add(component);
+            foldersAndFiles.Sort((c1, c2) =>
+            {
+                if (c1.GetType() == c2.GetType()) return 0;
+                if (c1 is File) return 1;
+                return -1;
+            });
         }
-        public override void AddFile(Component file)
-        {
-            if (!files.Contains(file))
-                files.Add(file);
-        }
-        public override void RemoveFolder(Component component) => folders.Remove(component);
-        public override void RemoveFile(Component component) => files.Remove(component);
+        public override void Remove(Component component) => foldersAndFiles.Remove(component);
         public override int Size()
         {
             int size = 0;
-            foreach (var item in files) size += item.Size();
-            foreach (var dir in folders) size += dir.Size();
+            foreach (var dir in foldersAndFiles) size += dir.Size();
             return size;
         }
-        //public override void Print()
-        //{
-        //    Console.WriteLine("Каталог: " + name);
-        //    if (folders.Count != 0)
-        //    {
-        //        Console.WriteLine("Вложеные каталоги:");
-        //        for (int i = 0; i < folders.Count; i++) folders[i].Print();
-        //    }
-        //    if (files.Count != 0)
-        //    {
-        //        Console.WriteLine("Файлы:");
-        //        for (int i = 0; i < files.Count; i++) files[i].Print();
-        //    }
-        //    //Console.WriteLine();
-        //}
         public override void Print()
         {
             Console.WriteLine("Каталог: " + name);
-            if (folders.Count != 0)
+            if (foldersAndFiles.Count != 0)
             {
-                Console.WriteLine("Вложеные каталоги:");
-                for (int i = 1; i <= folders.Count; i++)
-                    if (i % 4 == 0) Console.WriteLine("\\" + folders[i - 1].name + "\\    ");
-                    else Console.Write("\\" + folders[i - 1].name + "\\    ");
+                Console.Write("Вложеные каталоги и файлы: ");
+                for (int i = 1; i <= foldersAndFiles.Count; i++)
+                    if (i % 4 == 0) Console.WriteLine(foldersAndFiles[i - 1].name + ", ");
+                    else Console.Write( foldersAndFiles[i - 1].name +  ", ");
                 Console.WriteLine();
             }
-            if (files.Count != 0)
-            {
-                Console.Write("Файлы: ");
-                for (int i = 1; i <= files.Count; i++) Console.Write(files[i - 1].name + "  ");
-            }
-            Console.WriteLine();
         }
     }
     class File : Component
     {
         int size;
-        //public int Size { get { return size; } set { size = value; } }
         public File(string name, int size) : base(name) => this.size = size;
-        public override int Size()
-        {
-            return size;
-        }
+        public override int Size() { return size; }
     }
 }
