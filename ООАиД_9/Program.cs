@@ -54,7 +54,7 @@ namespace ООАиД_9
         public virtual void AddFolder(Component component) { }
         public virtual void AddFile(Component component) { }
         public virtual void RemoveFolder(Component component) { }
-        public virtual void RemoveFile(File component) { }
+        public virtual void RemoveFile(Component component) { }
         public virtual int Size() { return 0; }
         public virtual void Print() => Console.WriteLine(name + " ");
     }
@@ -73,7 +73,7 @@ namespace ООАиД_9
                 files.Add(file);
         }
         public override void RemoveFolder(Component component) => folders.Remove(component);
-        public override void RemoveFile(File component) => files.Remove(component);
+        public override void RemoveFile(Component component) => files.Remove(component);
         public override int Size()
         {
             int size = 0;
@@ -109,7 +109,7 @@ namespace ООАиД_9
             }
             if (files.Count != 0)
             {
-                Console.WriteLine("Файлы:");
+                Console.Write("Файлы: ");
                 for (int i = 1; i <= files.Count; i++) Console.Write(files[i - 1].name + "  ");
             }
             Console.WriteLine();
