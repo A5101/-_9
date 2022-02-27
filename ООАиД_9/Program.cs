@@ -11,8 +11,8 @@ namespace ООАиД_9
             // определяем новый диск
             Component diskC = new Directory("Диск С");
             // новые файлы
-            File pngFile = new File("12345.png", 100);
-            File docxFile = new File("Document.docx", 200);
+            Component pngFile = new File("12345.png", 100);
+            Component docxFile = new File("Document.docx", 200);
             // добавляем файлы на диск С
             diskC.AddFile(pngFile);
             diskC.AddFile(docxFile);
@@ -34,8 +34,8 @@ namespace ООАиД_9
             diskC.AddFolder(fold5);
             //diskC.AddFolder(fold1);
             // добавляем в нее файлы
-            File txtFile = new File("readme.txt", 300);
-            File csFile = new File("Program.cs", 400);
+            Component txtFile = new File("readme.txt", 300);
+            Component csFile = new File("Program.cs", 400);
             Component file1 = new File("Engine.exe", 1500);
             //docsFolder.AddFile(txtFile);
             docsFolder.AddFile(csFile);
