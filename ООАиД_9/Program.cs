@@ -52,13 +52,7 @@ namespace ООАиД_9
         public Directory(string name) : base(name) { }
         public override void Add(Component component) 
         { 
-            if (!foldersAndFiles.Contains(component)) foldersAndFiles.Add(component);
-            foldersAndFiles.Sort((c1, c2) =>
-            {
-                if (c1.GetType() == c2.GetType()) return 0;
-                if (c1 is File) return 1;
-                return -1;
-            });
+            if (!foldersAndFiles.Contains(component)) foldersAndFiles.Add(component);     
         }
         public override void Remove(Component component) => foldersAndFiles.Remove(component);
         public override int Size()
@@ -69,6 +63,12 @@ namespace ООАиД_9
         }
         public override void Print()
         {
+            foldersAndFiles.Sort((c1, c2) =>
+            {
+                if (c1.GetType() == c2.GetType()) return 0;
+                if (c1 is File) return 1;
+                return -1;
+            });
             Console.WriteLine("Каталог: " + name);
             if (foldersAndFiles.Count != 0)
             {
